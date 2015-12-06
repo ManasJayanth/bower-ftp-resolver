@@ -1,6 +1,8 @@
 var Ftp = require('./ftp-promisified');
 var Q = require('q');
 var fs = require('fs');
+var path = require('path');
+var os = require('os');
 
 /**
  * Factory function for resolver
@@ -71,6 +73,36 @@ module.exports = function resolver(bower) {
         // You can use npm's "tmp" package to tmp directories
         // See the "Resolver API" section for details on this method
         fetch: function (endpoint, cached) {
+            return Q.Promise(function (resolve, reject) {
+                var source = endpoint.source;
+                var tempPath = path.join(os.tmpdir(), endpoint.name);
+                var ftpConnection = new Ftp(source);
+                if (source.search(/^\s*ftp:/) === -1) {
+                    resolve(false);
+                } else {
+                    ftpConnection.init().then(function (connection) {
+                        var path = source.split('localhost')[1];
+                        fs.stat(tempPath, function (err, stats) {
+                            if (err) {
+                                fs.mkdir(tempPath);
+                            }
+                        });
+console.log(tempPath);
+                        connection.copyDir(path, tempPath).then(function () {
+                            return {
+                                tempPath: tempPath,
+                                removeIgnores: true,
+                                resolution: new Date()
+                            };
+                        })
+                        .catch(function (err) {
+                            reject(err);
+                        });
+                    }, function (error) {
+                        resolve([]);
+                    });
+                }
+            });
         }
     };
 };

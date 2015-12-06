@@ -14,7 +14,7 @@ describe('FTPResolver', function () {
                        done();
                    })
                    .catch(function (error) {
-                       console.log(error.message);
+                       console.error(error.message);
                    });
            })
 
@@ -29,13 +29,13 @@ describe('FTPResolver', function () {
                        done();
                    })
                    .catch(function (error) {
-                       console.log(error)
+                       console.error(error)
                    });
            })
     });
 
     describe('ftpResolver.releases', function () {
-        it('should ', function (done) {
+        it('should should return target releases', function (done) {
             var resolver = new ftpResolver();
             var testPackageUrl = 'ftp://localhost/development/js/' +
                     'dev/try-node-ftp/test-bower-package';
@@ -51,8 +51,34 @@ describe('FTPResolver', function () {
                     done();
                 })
                 .catch(function (error) {
-                    console.log(error)
+                    console.error(error)
                 });
         })
+    });
+
+    describe('ftpResolver.resolve', function () {
+        it('should download packages and copy to temp directory', function (done) {
+            var resolver = new ftpResolver();
+            var testPackageUrl = 'ftp://localhost/development/js/' +
+                    'dev/try-node-ftp/test-bower-package';
+            this.timeout(500);
+            resolver.fetch({
+                name: 'test-bower-package',
+                source: testPackageUrl,
+                target: '0.0.1'
+            })
+            .then(function (fetched) {
+                expect(fetched).to.have.property('tempPath');
+                // expect(fetched.tempPath).to.be.equal('0.0.1');
+                expect(fetched).to.have.property('removeIgnores');
+                // expect(fetched.version).to.be.equal('0.0.1');
+                expect(fetched).to.have.property('resolution');
+                done();
+            })
+            .catch(function (error) {
+                console.error(error)
+            });
+        });
+
     });
 })
