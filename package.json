@@ -1,0 +1,33 @@
+{
+  "name": "bower-ftp-resolver",
+  "version": "0.0.0",
+  "description": "Resolves bower packages over ftp",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "ftp": "^0.3.10",
+    "expect.js": "^0.3.1",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "moch tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prometheansacrifice/bower-ftp-resolver.git"
+  },
+  "keywords": [
+    "bower",
+    "ftp",
+    "resolver"
+  ],
+  "author": "Manas <prometheansacrifice@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prometheansacrifice/bower-ftp-resolver/issues"
+  },
+  "homepage": "https://github.com/prometheansacrifice/bower-ftp-resolver#readme"
+}
