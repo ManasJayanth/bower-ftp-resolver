@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var ftpResolver = require('./index');
+var ftpResolver = require('../lib/index');
 
 describe('FTPResolver', function () {
     describe('ftpResolver.match', function () {
