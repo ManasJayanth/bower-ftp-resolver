@@ -18,7 +18,7 @@
     "ftpd": "^0.2.12"
   },
   "scripts": {
-    "test": "moch tests/test.js"
+    "test": "mocha tests/*.js"
   },
   "repository": {
     "type": "git",
@@ -34,5 +34,8 @@
   "bugs": {
     "url": "https://github.com/prometheansacrifice/bower-ftp-resolver/issues"
   },
-  "homepage": "https://github.com/prometheansacrifice/bower-ftp-resolver#readme"
+  "homepage": "https://github.com/prometheansacrifice/bower-ftp-resolver#readme",
+  "engines": {
+    "node": ">=0.10.0"
+  }
 }

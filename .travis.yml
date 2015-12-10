@@ -1,0 +1,7 @@
+before_install:
+  - npm install mocha -g
+
+language: node_js
+
+node_js:
+  - "5.2"
