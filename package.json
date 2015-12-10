@@ -18,7 +18,7 @@
     "ftpd": "^0.2.12"
   },
   "scripts": {
-    "test": "moch tests/test.js"
+    "test": "mocha tests/*.js"
   },
   "repository": {
     "type": "git",
