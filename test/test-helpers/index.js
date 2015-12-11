@@ -80,7 +80,6 @@ testHelpers.startFTPServer = function (options, callback) {
         });
     });
 
-    server.debugging = 4;
     server.listen(options.port);
     // console.log('Listening on port ' + options.port);
     callback();
