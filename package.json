@@ -1,8 +1,8 @@
 {
   "name": "bower-ftp-resolver",
-  "version": "0.0.0",
+  "version": "0.1.4",
   "description": "Resolves bower packages over ftp",
-  "main": "index.js",
+  "main": "lib/index.js",
   "directories": {
     "test": "tests"
   },
