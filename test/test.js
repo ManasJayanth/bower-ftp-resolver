@@ -113,6 +113,17 @@ describe('FTPResolver', function () {
                     console.error(error)
                 });
         })
+        it('should should reject when invalid url is provided', function () {
+            var resolver = new BowerFTPResolver();
+            var testPackageUrl = 'not-ftp://localhost/test-bower-package/';
+            resolver.releases(testPackageUrl)
+                .then(function (releases) {
+                  expect(releases).to.not.be.ok();
+                })
+                .catch(function (error) {
+                    console.error(error)
+                });
+        })
     });
 
     describe('BowerFTPResolver.fetch', function () {
