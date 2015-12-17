@@ -20,16 +20,20 @@ describe('FTP', function () {
     it('copies a file from source to destination', function (done) {
       var extendedFTP = new ExtendedFTP();
       var tempDir = 'test-temp-dir-' + Math.floor(Math.random() * 1000),
+          nestedDir = 'nestedDir',
           testText = 'testing-text',
           testFileName = 'test.file';
 
       extendedFTP.on('ready', function () {
         extendedFTP.copyDirAsync('/' + tempDir, '.')
           .then(function () {
-            var textFound = fs.readFileSync('./' + tempDir + '/' +
-                                            testFileName).toString();
+            var fileName = './' + tempDir + '/' +
+                  nestedDir + '/' + testFileName;
+            var textFound = fs.readFileSync(fileName).toString();
             expect(textFound, testText);
-            fs.unlinkSync('./' + tempDir + '/' + testFileName);
+            fs.unlinkSync('./' + tempDir + '/' + nestedDir + '/' +
+                          testFileName);
+            fs.rmdir(tempDir + '/' + nestedDir);
             fs.rmdir(tempDir);
             done();
           })
@@ -38,14 +42,18 @@ describe('FTP', function () {
           });
       });
 
-      fs.mkdir(tempDir);
-      fs.writeFile('./' + tempDir + '/' + testFileName, testText, function (err) {
-        if (!err) {
-          extendedFTP.connect({
-            host: 'localhost',
-            port: __FTP_PORT__
+      fs.mkdir(tempDir, function (err) {
+        fs.mkdir(tempDir + '/' + nestedDir, function (err) {
+          fs.writeFile('./' + tempDir + '/' + nestedDir + '/' +
+                       testFileName, testText, function (err) {
+            if (!err) {
+              extendedFTP.connect({
+                host: 'localhost',
+                port: __FTP_PORT__
+              });
+            }
           });
-        }
+        });
       });
     });
   });
