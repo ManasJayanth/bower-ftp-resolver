@@ -32,12 +32,14 @@ describe('FTPResolver', function () {
         fs.writeFile('./' + tempDir + '/' + testFileName, testText, function (err) {
             if (!err) {
                 fs.writeFile('./' + tempDir + '/bower.json', testBowerJSON, function (err) {
+                  fs.mkdir('test-empty-dir', function (err) {
                     testHelpers.startFTPServerAsync({port: __FTP_PORT__})
                         .then(function () {
                             done();
                         })
                         .catch(function (e) {
                         });
+                  })
                 });
             }
         });
@@ -85,6 +87,15 @@ describe('FTPResolver', function () {
            })
     });
 
+    describe('BowerFTPResolver.locate', function () {
+      it('should return package path (file://localhost/test-bower-package)', function () {
+        var resolver = new BowerFTPResolver();
+        var testPackageName = 'test-bower-package/';
+        var packageLocation = resolver.locate(testPackageName);
+        expect(packageLocation).to.equal('file://localhost/test-bower-package/');
+      });
+    });
+
     describe('BowerFTPResolver.releases', function () {
         it('should should return target releases', function (done) {
             var resolver = new BowerFTPResolver();
@@ -99,6 +110,17 @@ describe('FTPResolver', function () {
                         expect(release.version).to.be.equal('0.0.1');
                     });
                     done();
+                })
+                .catch(function (error) {
+                    console.error(error)
+                });
+        })
+        it('should should reject when invalid url is provided', function () {
+            var resolver = new BowerFTPResolver();
+            var testPackageUrl = 'not-ftp://localhost/test-bower-package/';
+            resolver.releases(testPackageUrl)
+                .then(function (releases) {
+                  expect(releases).to.not.be.ok();
                 })
                 .catch(function (error) {
                     console.error(error)
@@ -130,4 +152,4 @@ describe('FTPResolver', function () {
         });
 
     });
-})
+});
