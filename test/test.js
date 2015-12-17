@@ -85,6 +85,15 @@ describe('FTPResolver', function () {
            })
     });
 
+    describe('BowerFTPResolver.locate', function () {
+      it('should return package path (file://localhost/test-bower-package)', function () {
+        var resolver = new BowerFTPResolver();
+        var testPackageName = 'test-bower-package/';
+        var packageLocation = resolver.locate(testPackageName);
+        expect(packageLocation).to.equal('file://localhost/test-bower-package/');
+      });
+    });
+
     describe('BowerFTPResolver.releases', function () {
         it('should should return target releases', function (done) {
             var resolver = new BowerFTPResolver();
@@ -130,4 +139,4 @@ describe('FTPResolver', function () {
         });
 
     });
-})
+});
