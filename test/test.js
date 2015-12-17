@@ -32,12 +32,14 @@ describe('FTPResolver', function () {
         fs.writeFile('./' + tempDir + '/' + testFileName, testText, function (err) {
             if (!err) {
                 fs.writeFile('./' + tempDir + '/bower.json', testBowerJSON, function (err) {
+                  fs.mkdir('test-empty-dir', function (err) {
                     testHelpers.startFTPServerAsync({port: __FTP_PORT__})
                         .then(function () {
                             done();
                         })
                         .catch(function (e) {
                         });
+                  })
                 });
             }
         });
