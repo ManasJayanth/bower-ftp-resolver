@@ -54,34 +54,19 @@ describe('FTPResolver', function () {
   });
   describe('BowerFTPResolver.match', function () {
     it('should return promise resolving to true to connection handle ' +
-       'for a valid FTP url', function (done) {
+       'for a valid FTP url', function () {
          var resolver = new BowerFTPResolver();
          var testPackageUrl = 'ftp://localhost/test-bower-package/';
-         this.timeout(1000);
-         resolver.match(testPackageUrl)
-           .then(function (connection) {
-             expect(connection).to.be.ok();
-             done();
-           })
-           .catch(function (error) {
-             throw new Error(error);
-             // console.error(error.message);
-           });
+         var isMatched = resolver.match(testPackageUrl)
+         expect(isMatched).to.be.ok();
        })
 
     it('should return resolve to false for an invalid FTP url',
-       function (done) {
+       function () {
          var resolver = new BowerFTPResolver();
          var testPackageUrl = 'not-ftp://localhost/';
-         this.timeout(500);
-         resolver.match(testPackageUrl)
-           .then(function (isMatched) {
-             expect(isMatched).to.not.be.ok();
-             done();
-           })
-           .catch(function (error) {
-             console.error(error)
-           });
+         var isMatched = resolver.match(testPackageUrl)
+         expect(isMatched).to.not.be.ok();
        })
   });
 
