@@ -70,6 +70,15 @@ describe('FTPResolver', function () {
        })
   });
 
+  describe('BowerFTPResolver.locate', function () {
+    it('should return normalized source', function () {
+         var resolver = new BowerFTPResolver();
+         var testPackageName = 'test-bower-package';
+         var isMatched = resolver.locate(testPackageName)
+         expect(isMatched).to.be.equal('ftp://localhost/test-bower-package/');
+       })
+  });
+
   describe('BowerFTPResolver.releases', function () {
     it('should should return target releases', function (done) {
       var resolver = new BowerFTPResolver();
