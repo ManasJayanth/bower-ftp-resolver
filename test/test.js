@@ -98,6 +98,20 @@ describe('FTPResolver', function () {
           console.error(error)
         });
     })
+    it('should return the promise that resolves false when supplied with ' +
+       'invalid url', function (done) {
+      var resolver = new BowerFTPResolver();
+      var testPackageUrl = 'not-ftp://localhost/test-bower-package/';
+      this.timeout(500);
+      resolver.releases(testPackageUrl)
+        .then(function (releases) {
+          expect(releases).to.not.be.ok();
+          done();
+        })
+        .catch(function (error) {
+          console.error(error)
+        });
+    })
   });
 
   describe('BowerFTPResolver.fetch', function () {
