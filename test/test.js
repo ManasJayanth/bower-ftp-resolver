@@ -97,7 +97,7 @@ describe('FTPResolver', function () {
         .catch(function (error) {
           console.error(error)
         });
-    })
+    });
     it('should return the promise that resolves false when supplied with ' +
        'invalid url', function (done) {
       var resolver = new BowerFTPResolver();
@@ -111,7 +111,26 @@ describe('FTPResolver', function () {
         .catch(function (error) {
           console.error(error)
         });
-    })
+    });
+    it('should return the promise that rejects when supplied with ' +
+       'valid url that does not exist', function (done) {
+      var resolver = new BowerFTPResolver();
+      var testPackageUrl = 'ftp://localhost/test-bower-package-that-doesnot-exist/';
+      this.timeout(500);
+      resolver.releases(testPackageUrl)
+        .catch(function (error) {
+          expect(error).to.have.property('cause');
+          expect(error.cause).to.have.property('code');
+          expect(error.cause.code).to.be.equal(550);
+          expect(error.cause).to.have.property('message');
+          expect(error.cause.message).to.be.equal('Not Found');
+          expect(error).to.have.property('code');
+          expect(error.code).to.be.equal(550);
+          expect(error).to.have.property('message');
+          expect(error.message).to.be.equal('Not Found');
+          done();
+        });
+    });
   });
 
   describe('BowerFTPResolver.fetch', function () {
