@@ -3,31 +3,32 @@ var expect = require('expect.js'),
     BowerFTPResolver = require('../lib/index'),
     testHelpers = require('./test-helpers/');
 
-describe('FTPResolver', function () {
-  var tempDir = 'test-bower-package',
-      testText = 'module.exports = console.log',
-      testBowerJSON = JSON.stringify({
-        "name": "test-bower-package",
-        "version": "0.0.1",
-        "target": "v0.0.1",
-        "description": "",
-        "main": "index.js",
-        "moduleType": [],
-        "license": "MIT",
-        "homepage": "",
-        "ignore": [
-          "**/.*",
-          "node_modules",
-          "bower_components",
-          "test",
-          "tests"
-        ]
-      }),
-      testFileName = 'index.js';
+var tempDir = 'test-bower-package',
+    testText = 'module.exports = console.log',
+    testBowerJSON = JSON.stringify({
+      "name": "test-bower-package",
+      "version": "0.0.1",
+      "target": "v0.0.1",
+      "description": "",
+      "main": "index.js",
+      "moduleType": [],
+      "license": "MIT",
+      "homepage": "",
+      "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+      ]
+    }),
+    testFileName = 'index.js';
 
+__TEST__ = 1;
+__FTP_PORT__ = 9999;
+
+describe('FTPResolver', function () {
   beforeEach(function (done) {
-    __TEST__ = 1;
-    __FTP_PORT__ = 9999;
     fs.mkdir(tempDir);
     fs.writeFile('./' + tempDir + '/' + testFileName, testText, function (err) {
       if (!err) {
@@ -47,6 +48,7 @@ describe('FTPResolver', function () {
       if (!err) {
         fs.unlink('./' + tempDir + '/bower.json', function (err) {
           fs.rmdir(tempDir);
+          testHelpers.stopFTPServerAsync();
           done();
         });
       }
@@ -142,12 +144,9 @@ describe('FTPResolver', function () {
         name: 'test-bower-package',
         source: testPackageUrl,
         target: '0.0.1'
-      })
-        .then(function (fetched) {
+      }).then(function (fetched) {
           expect(fetched).to.have.property('tempPath');
-          // expect(fetched.tempPath).to.be.equal('0.0.1');
           expect(fetched).to.have.property('removeIgnores');
-          // expect(fetched.version).to.be.equal('0.0.1');
           expect(fetched).to.have.property('resolution');
           done();
         })
@@ -155,6 +154,38 @@ describe('FTPResolver', function () {
           console.error(error)
         });
     });
-
+    it('should resolve to false when invalid url is provided', function (done) {
+      var resolver = new BowerFTPResolver();
+      var testPackageUrl = 'not-ftp://localhost/test-bower-package';
+      this.timeout(500);
+      resolver.fetch({
+        name: 'test-bower-package',
+        source: testPackageUrl,
+        target: '0.0.1'
+      }).then(function (fetched) {
+          expect(fetched).to.not.be.ok();
+          done();
+        })
+        .catch(function (error) {
+          console.error(error)
+        });
+    });
+    it('should reject when valid url that does not exist is provided', function (done) {
+      var resolver = new BowerFTPResolver();
+      var testPackageUrl = 'ftp://localhost/non-existent-test-bower-package';
+      this.timeout(500);
+      resolver.fetch({
+        name: 'test-bower-package',
+        source: testPackageUrl,
+        target: '0.0.1'
+      }).catch(function (error) {
+        expect(error).to.have.property('cause');
+        expect(error.cause).to.have.property('code');
+        expect(error.cause.code).to.be.equal(550);
+        expect(error).to.have.property('code');
+        expect(error.code).to.be.equal(550);
+        done();
+      });
+    });
   });
-})
+});
