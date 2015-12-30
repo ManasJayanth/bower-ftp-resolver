@@ -2,11 +2,11 @@ var Promise = require('bluebird'),
     ftpd = require('ftpd'),
     fs = require('fs'),
     path = require('path'),
-    testHelpers;
+    testHelpers, server;
 
 testHelpers = {};
 testHelpers.startFTPServer = function (options, callback) {
-  var keyFile, certFile, server,
+  var keyFile, certFile,
       options = {
         host: process.env.IP || '127.0.0.1',
         port: options.port || process.env.PORT || 21,
@@ -55,6 +55,8 @@ testHelpers.startFTPServer = function (options, callback) {
     uploadMaxSlurpSize: 7000 // N/A unless 'useWriteFile' is true.
   });
 
+  this._server = server;
+
   server.on('error', function (error) {
     // console.log('FTP Server error:', error);
   });
@@ -83,6 +85,9 @@ testHelpers.startFTPServer = function (options, callback) {
   server.listen(options.port);
   // console.log('Listening on port ' + options.port);
   callback();
+};
+testHelpers.stopFTPServer = function () {
+  server.close();
 };
 
 Promise.promisifyAll(testHelpers);
